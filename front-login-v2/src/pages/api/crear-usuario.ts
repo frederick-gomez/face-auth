@@ -99,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return
     }
 
-    res.status(204).json({ message: 'No se encontraron coincidencias en el documento.' })
+    res.status(404).json({ message: 'No se encontraron coincidencias en el documento.' })
   } catch (error) {
     res.status(500).json({ message: 'Ocurrio un error en el servidor: ' + error })
   }
