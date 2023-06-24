@@ -1,5 +1,5 @@
 type Props = {
-	className: string;
+	className?: string;
 };
 
 const CameraIcon = ({ className }: Props) => {
