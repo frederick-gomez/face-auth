@@ -25,9 +25,8 @@ Para levantar la imagen correr los siguientes comandos:
 ```bash
 docker-compose build
 
-docker-compose up
+docker-compose up -d
 ```
 
 ## Env
-
-Dentro del docker-compose.yml se definen los valores que pasan al env del front
+Definir archivo .env con los variables de entorno.
