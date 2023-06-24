@@ -68,8 +68,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const crearResponse = await crearUsuario(ci)
         if (crearResponse === 'OK') {
           await agregarImagenUsuario(ci, docFrontal)
+          return res.status(200).json({ message: crearResponse })
         }
-        return res.status(200).json({ message: crearResponse })
+        return res.status(400).json({ message: crearResponse })
       }
     }
 
@@ -86,8 +87,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const crearResponse = await crearUsuario(ci)
         if (crearResponse === 'OK') {
           await agregarImagenUsuario(ci, docFrontal)
+          return res.status(200).json({ message: crearResponse })
         }
-        return res.status(200).json({ message: crearResponse })
+        return res.status(400).json({ message: crearResponse })
       }
     }
 
