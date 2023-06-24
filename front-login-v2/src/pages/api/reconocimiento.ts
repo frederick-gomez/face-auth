@@ -87,8 +87,13 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
       if (typeof comparativa === 'number' && comparativa < parseFloat(process.env.NIVEL_REC!)) {
         return res.status(200).json({ message: 'Menor a expectativa: ' + comparativa })
       }
-      await agregarImagenUsuario(ci, captura)
-      return res.status(200).json({ message: 'OK' })
+      const imagenAgregado = await agregarImagenUsuario(ci, captura)
+      if(imagenAgregado === "OK"){
+        return res.status(200).json({ message: 'OK' })
+      }else{
+        return res.status(500).json({ message: 'Ocurrio un error.' })
+      }
+      
     }
     console.log(response.data)
     res.status(response.status).json({ message: 'No se encontraron imagenes para este usuario.' })
