@@ -5,7 +5,8 @@
 	],
 	"expresiones": [
 		{ "expresion": "happy", "mensaje": "Favor sonria mientras verificamos su cedula. :)" },
-		{ "expresion": "angry", "mensaje": "Favor pongase como Hulk !! muy molesto ! :(" },
-		{ "expresion": "surprised", "mensaje": "Favor sorprendase ! :O" }		
+		{ "expresion": "angry", "mensaje": "Favor pongase como Hulk !! muy molesto ! :X" },
+		{ "expresion": "surprised", "mensaje": "Favor sorprendase ! :O" },
+		{ "expresion": "sad", "mensaje": "Favor ponganse a llorar ! :(" }		
 	]
 }
