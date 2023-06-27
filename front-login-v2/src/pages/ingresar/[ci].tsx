@@ -6,23 +6,29 @@ import { base64ToImage } from '@/utils/ConverFile';
 import { RegistrarResponse } from '@/models/RegistrarResponse';
 import { useRouter } from 'next/router';
 import mensajes from '@/utils/mensajes.json';
+import { TypeApiResponse } from '@/models/ApiResponse';
 
-const MENSAJE_INICIAL = 'Sonria porfavor';
+interface Props extends TypeApiResponse {
+	expresion: keyof faceapi.FaceExpressions;
+}
 
-type TypeApiResponse = {
-	message: string;
-	estado: 'OK' | 'Error' | 'Inicial' | 'Cargando';
+Ingresar.getInitialProps = async () => {
+	const randIndex = Math.floor(Math.random() * mensajes.expresiones.length);
+	const VALIDACION_INICIAL = mensajes.expresiones[randIndex];
+
+	return {
+		estado: 'Inicial',
+		message: VALIDACION_INICIAL.mensaje,
+		expresion: VALIDACION_INICIAL.expresion,
+	};
 };
 
-function Ingresar() {
+function Ingresar({ estado, message, expresion }: Props) {
 	const router = useRouter();
 	const CI = router.query.ci as string;
 	const webcamRef = useRef<Webcam>(null);
 	const [capturedImage, setCapturedImage] = useState('');
-	const [apiResponse, setApiResponse] = useState<TypeApiResponse>({
-		estado: 'Inicial',
-		message: MENSAJE_INICIAL,
-	});
+	const [apiResponse, setApiResponse] = useState<TypeApiResponse>({ estado, message });
 	const [usuarioIdentificado, setUsuarioIdentificado] = useState(false);
 
 	const loadModels = async () => {
@@ -46,9 +52,8 @@ function Ingresar() {
 		const capture = async () => {
 			const imageSrc = webcamRef.current?.getScreenshot();
 
-			if (imageSrc) {
+			if (imageSrc && imageSrc?.length > 0) {
 				setCapturedImage(imageSrc.split(',')[1]);
-				setApiResponse({ estado: 'Inicial', message: MENSAJE_INICIAL });
 
 				const detections = await faceapi
 					.detectSingleFace(base64ToImage(imageSrc), new faceapi.TinyFaceDetectorOptions())
@@ -56,8 +61,10 @@ function Ingresar() {
 
 				if (detections) {
 					const { expressions } = detections;
-					if (expressions.happy > 0.5 || expressions.surprised > 0.5) {
-						await reconocimientoFacial();
+					if ((expressions[`${expresion}`] as number) > 0.5) {
+						if (apiResponse.estado !== 'Cargando') {
+							await reconocimientoFacial();
+						}
 					}
 				}
 			}
@@ -95,7 +102,7 @@ function Ingresar() {
 		}, 2500);
 
 		return () => clearInterval(interval);
-	}, [capturedImage, usuarioIdentificado, CI]);
+	}, [capturedImage, usuarioIdentificado, CI, apiResponse.estado, expresion]);
 
 	let divResultado: React.ReactNode;
 

@@ -16,7 +16,7 @@ type CrearUsuarioResponse = {
 };
 
 type Props = {
-	continuarRegistro: (cedulaFrontal: string) => void;
+	continuarRegistro: () => void;
 };
 
 const Documento = ({ continuarRegistro }: Props) => {
@@ -49,7 +49,7 @@ const Documento = ({ continuarRegistro }: Props) => {
 			});
 
 			if (response.status === 200) {
-				continuarRegistro(docFrontal);
+				continuarRegistro();
 			} else {
 				setAviso(response.data.message);
 			}

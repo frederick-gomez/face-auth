@@ -39,7 +39,6 @@ const CamaraDoc = ({ setDocFrontal, setDocTrasero, docFrontal, docTrasero }: Pro
 					screenshotFormat='image/jpeg'
 					width='100%'
 					height='100%'
-					mirrored={true}
 					videoConstraints={{ facingMode: 'user' }}
 				/>
 				<button

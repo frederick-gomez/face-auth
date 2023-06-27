@@ -2,5 +2,10 @@
 	"recomendaciones": [
 		"Asegurate de contar con suficiente iluminación.",
 		"Quitate cualquier accesorio como: lentes, auriculares, etc."
+	],
+	"expresiones": [
+		{ "expresion": "happy", "mensaje": "Favor sonria mientras verificamos su cedula. :)" },
+		{ "expresion": "angry", "mensaje": "Favor pongase como Hulk !! muy molesto ! :(" },
+		{ "expresion": "surprised", "mensaje": "Favor sorprendase ! :O" }		
 	]
 }
