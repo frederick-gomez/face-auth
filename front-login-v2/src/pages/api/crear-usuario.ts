@@ -67,8 +67,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (response1.data.text.includes(ci)) {
         const crearResponse = await crearUsuario(ci)
         if (crearResponse === 'OK') {
-          await agregarImagenUsuario(ci, docFrontal)
-          return res.status(200).json({ message: crearResponse })
+          const agregarImgRes = await agregarImagenUsuario(ci, docFrontal)
+          if (agregarImgRes === 'OK') {
+            return res.status(200).json({ message: crearResponse })
+          } else {
+            return res.status(500).json({ message: "Ocurrio un error" })
+          }
         }
         return res.status(400).json({ message: crearResponse })
       }
