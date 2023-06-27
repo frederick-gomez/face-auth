@@ -2,5 +2,11 @@
 	"recomendaciones": [
 		"Asegurate de contar con suficiente iluminación.",
 		"Quitate cualquier accesorio como: lentes, auriculares, etc."
+	],
+	"expresiones": [
+		{ "expresion": "happy", "mensaje": "" },
+		{ "expresion": "angry", "mensaje": "" },
+		{ "expresion": "surprised", "mensaje": "" },
+		{ "expresion": "neutral", "mensaje": "" }
 	]
 }

@@ -6,27 +6,18 @@ import { base64ToImage } from '@/utils/ConverFile';
 import { RegistrarResponse } from '@/models/RegistrarResponse';
 import ArrowLeftIcon from '@/ui/icons/ArrowLeftIcon';
 import mensajes from '@/utils/mensajes.json';
+import { TypeApiResponse } from '@/models/ApiResponse';
 
-type Props = {
+interface Props extends TypeApiResponse {
+	expresion: keyof faceapi.FaceExpressions;
 	volver: () => void;
-	cedulaFrontal: string;
 	ci: string;
-};
+}
 
-type TypeApiResponse = {
-	message: string;
-	estado: 'OK' | 'Error' | 'Inicial' | 'Cargando';
-};
-
-const MENSAJE_INICIAL = 'Sonria porfavor';
-
-function Facial({ ci, volver }: Props) {
+function Facial({ ci, volver, estado, message, expresion }: Props) {
 	const webcamRef = useRef<Webcam>(null);
 	const [capturedImage, setCapturedImage] = useState('');
-	const [apiResponse, setApiResponse] = useState<TypeApiResponse>({
-		estado: 'Inicial',
-		message: MENSAJE_INICIAL,
-	});
+	const [apiResponse, setApiResponse] = useState<TypeApiResponse>({ estado, message });
 	const [usuarioIdentificado, setUsuarioIdentificado] = useState(false);
 
 	const loadModels = async () => {
@@ -50,9 +41,8 @@ function Facial({ ci, volver }: Props) {
 		const capture = async () => {
 			const imageSrc = webcamRef.current?.getScreenshot();
 
-			if (imageSrc) {
+			if (imageSrc && imageSrc?.length > 0) {
 				setCapturedImage(imageSrc.split(',')[1]);
-				setApiResponse({ estado: 'Inicial', message: MENSAJE_INICIAL });
 
 				const detections = await faceapi
 					.detectSingleFace(base64ToImage(imageSrc), new faceapi.TinyFaceDetectorOptions())
@@ -60,8 +50,10 @@ function Facial({ ci, volver }: Props) {
 
 				if (detections) {
 					const { expressions } = detections;
-					if (expressions.happy > 0.5 || expressions.surprised > 0.5) {
-						await reconocimientoFacial();
+					if ((expressions[`${expresion}`] as number) > 0.5) {
+						if (apiResponse.estado !== 'Cargando') {
+							await reconocimientoFacial();
+						}
 					}
 				}
 			}
@@ -99,7 +91,7 @@ function Facial({ ci, volver }: Props) {
 		}, 2000);
 
 		return () => clearInterval(interval);
-	}, [capturedImage, usuarioIdentificado, ci]);
+	}, [capturedImage, usuarioIdentificado, ci, apiResponse.estado, expresion]);
 
 	let divResultado: React.ReactNode;
 
