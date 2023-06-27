@@ -3,20 +3,16 @@ version: '3.4'
 services:
   front:
     image: front
+    env_file:
+      - .env
     build:
       context: front-login-v2
       dockerfile: ./Dockerfile
-    environment:
-      NODE_ENV: production
-      TIMEOUT: 120000
-      RECOGNITION_APIKEY: 44334fea-f12a-4e65-974b-06c8b35ed27a
-      RECOGNITION_API: http://localhost:8000/api/v1/recognition/
-      VERIFICATION_APIKEY: d339e07a-e9a8-4419-a67c-3beb8461897d
-      VERIFICATION_API: http://localhost:8000/api/v1/verification/
-      OCR_API: http://api:8200/ocr
-      NIVEL_REC: '0.8'
     ports:
       - 5001:5001
+    networks:
+      - compreface_1_default
+
   api:
     image: api
     build:
@@ -27,6 +23,7 @@ services:
     expose:
       - 8200
     networks:
-      default:
-        aliases:
-          - api
+      - compreface_1_default
+networks:
+  compreface_1_default:
+    external: true
