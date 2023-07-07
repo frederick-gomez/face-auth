@@ -3,6 +3,7 @@ import axios from 'axios'
 import { commonHeaders, requestConfig } from '@/config/axios'
 import { CargarImagenResponse, RegistrarResponse } from '@/models/RegistrarResponse'
 import { OcrResponse } from '@/models/OcrResponse'
+import { verifyToken } from '@/utils/Token'
 
 export const config = { api: { bodyParser: { sizeLimit: '15mb' } } }
 
@@ -49,7 +50,14 @@ const agregarImagenUsuario = async (nroCi: string, ciFrontal: string) => {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { docFrontal, docTrasero, ci } = req.body
+  let { docFrontal, docTrasero, ci } = req.body
+  try {
+    const isVerified = verifyToken(ci)
+    ci = isVerified.ci
+  } catch (err) {
+    return res.status(401).json(err)
+  }
+
   const url = process.env.OCR_API!;
   const params1 = {
     base64Image: docFrontal,

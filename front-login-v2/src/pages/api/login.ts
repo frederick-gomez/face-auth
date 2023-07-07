@@ -3,6 +3,7 @@ import axios from 'axios'
 import { commonHeaders, requestConfig } from '@/config/axios'
 import { CargarImagenResponse, ComparacionResponse, ImgPorUsuarioResponse } from '@/models/RegistrarResponse';
 import { arrayBufferToBase64 } from '@/utils/ConverFile';
+import { verifyToken } from '@/utils/Token';
 
 interface ExtendedNextApiRequest extends NextApiRequest {
   body: {
@@ -65,7 +66,15 @@ const agregarImagenUsuario = async (nroCi: string, imagen: string) => {
 }
 
 export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
-  const { ci, captura } = req.body
+  let { ci, captura } = req.body
+
+  try {
+    const isVerified = verifyToken(ci)
+    ci = isVerified.ci
+  } catch (err) {
+    return res.status(401).json(err)
+  }
+
   const params = `faces?subject=${ci}`
   const url = process.env.RECOGNITION_API + params;
 

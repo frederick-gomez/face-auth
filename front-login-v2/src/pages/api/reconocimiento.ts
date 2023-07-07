@@ -4,6 +4,7 @@ import axios from 'axios'
 import { commonHeaders, requestConfig } from '@/config/axios'
 import { arrayBufferToBase64 } from '@/utils/ConverFile';
 import { CargarImagenResponse, ComparacionResponse, ImgPorUsuarioResponse } from '@/models/RegistrarResponse';
+import { verifyToken } from '@/utils/Token';
 
 export const config = { api: { bodyParser: { sizeLimit: '15mb' } } }
 
@@ -68,7 +69,15 @@ const compararImagenes = async (imagen1: string, imagen2: string) => {
 }
 
 export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
-  const { ci, captura } = req.body
+  let { ci, captura } = req.body
+
+  try {
+    const isVerified = verifyToken(ci)
+    ci = isVerified.ci
+  } catch (err) {
+    return res.status(401).json(err)
+  }
+
   const params = `faces?subject=${ci}`
   const url = process.env.RECOGNITION_API + params;
 
